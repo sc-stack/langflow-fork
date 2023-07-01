@@ -1,0 +1,21 @@
+name: Sync with parent repo
+on:
+  schedule:
+    - cron:  '0 */12 * * *'  
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: dev
+
+      - name: Pull changes from parent repo
+        run: |
+          git remote add parent https://github.com/logspace-ai/langflow.git
+          git fetch parent dev
+          git checkout staging
+          git merge parent/dev
+          git push origin staging
